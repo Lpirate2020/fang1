@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>房天下-分区数据分析</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+
+    <link rel="stylesheet" href="fontawesome/css/all.min.css"> <!-- https://fontawesome.com/ -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <!-- https://fonts.google.com/ -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/templatemo-xtra-blog.css" rel="stylesheet">
+    <!--    highcharts配件-->
+    <link rel="icon" href="https://jscdn.com.cn/highcharts/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.highcharts.com.cn/highcharts/highcharts.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <!--    用户状态js请求-->
+    <script type="text/javascript" src="js/hosts.js"></script>
+    <script type="text/javascript" src="js/vue-2.5.16.js"></script>
+    <script type="text/javascript" src="js/axios-0.18.0.min.js"></script>
+
+</head>
+<body>
+<div class="header_con">
+    <div class="header">
+        <div class="header" id="app">
+            <div class="fr">
+                <div class="login_btn fl" v-if="show">
+                    欢迎您：<em>{{ username }}</em>
+                    <span>|</span>
+                    <a @click="logout">退出</a>
+                </div>
+
+                <div class="login_btn fl" v-if="showlogin">
+                    <a href="http://127.0.0.1:8080/login.html">登录</a>
+                    <span>|</span>
+                    <a href="http://127.0.0.1:8080/register.html">注册</a>
+                </div>
+
+                <div class="user_link fl">
+                    <span>|</span>
+                    <a href="http://127.0.0.1:8080/user_center_info.html">用户中心</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<header class="tm-header" id="tm-header">
+    <div class="tm-header-wrapper">
+        <button class="navbar-toggler" type="button" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="tm-site-header">
+            <h1 class="text-center">
+                <a href="index.html">返回首页</a><br>
+                <a href="http://127.0.0.1:8000/list">查看房源</a>
+            </h1>
+        </div>
+        <nav class="tm-nav" id="tm-nav">
+            <ul>
+                <li class="tm-nav-item "><a href="data_analysis_index.html" class="tm-nav-link">
+                    <i class="fas fa-home"></i>
+                    数据分析首页
+                </a></li>
+                <li class="tm-nav-item "><a href="key_data_analysis.html" class="tm-nav-link">
+                    <i class="fas fa-users"></i>
+                    当前城市房源概况
+                </a></li>
+                <li class="tm-nav-item active"><a href="comparative_data_analysis.html" class="tm-nav-link">
+                    <i class="fas fa-users"></i>
+                    各区房源概况
+                </a></li>
+            </ul>
+        </nav>
+        <p class="tm-mb-80 pr-5 text-white">
+            介绍文字
+        </p>
+    </div>
+</header>
+<div class="container-fluid">
+    <main class="tm-main">
+        <div class="row tm-row">
+            当前城市：哈尔滨
+        </div>
+        <div id="container2" style="min-width:400px;height:400px"></div>
+        <div id="container" style="min-width:400px;height:400px"></div>
+        <div id="container1" style="min-width:400px;height:400px"></div>
+
+        <script>
+            var chart = Highcharts.chart('container2', {
+                credits: {
+                    enabled: false,
+                },
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '哈尔滨市各区二手房每平米均价对比'
+                },
+                subtitle: {
+                    text: '数据来源: https://hrb.lianjia.com/ershoufang/'
+                },
+                xAxis: {
+                    title: {
+                        text: '地区'
+                    },
+                    categories: [
+                        '道里区', '南岗区', '松北区', '香坊区', '道外区',
+                        '呼兰区', '平房区', '双城区', '五常市', '依兰县',
+                        '阿城区', '巴彦县', '尚志市'
+                    ],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '价格（元）'
+                    }
+                },
+                tooltip: {
+                    // head + 每个 point + footer 拼接成完整的 table
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f}元 </b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        point: {
+                            events: {
+                                click: function (e) {
+                                    //location.href = this.options.url;
+                                    //location.href = e.point.url
+                                    location.href = e.point.url
+                                }
+                            }
+                        }
+                    },
+                    column: {
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    // 		[11470.49, 11399.18, 10067.88, 9962.07, 9081.43, 7883.62,
+                    // 7052.78, 5845.40, 5823.57, 4711.00, 4372.47, 4322.60,3860.00]
+                    data: [{
+                        y: 11470.49,
+                        url: '#',
+                    }, {
+                        y: 11399.18,
+                        url: '#',
+                    }, {
+                        y: 10067.88,
+                        url: '#',
+                    }, {
+                        y: 9962.07,
+                        url: '#',
+                    }, {
+                        y: 9081.43,
+                        url: 'http://127.0.0.1:8000/list_region/?region=daowai',
+                    }, {
+                        y: 7883.62,
+                        url: '#',
+                    }, {
+                        y: 7052.78,
+                        url: 'http://127.0.0.1:8000/list_region/?region=pingfang',
+                    }, {
+                        y: 5845.40,
+                        url: '#',
+                    }, {
+                        y: 5823.57,
+                        url: '#',
+                    }, {
+                        y: 4711.00,
+                        url: '#',
+                    }, {
+                        y: 4372.47,
+                        url: '#',
+                    }, {
+                        y: 4322.60,
+                        url: '#',
+                    }, {
+                        y: 3860.00,
+                        url: '#',
+                    }]
+                }]
+            });
+            var chart = Highcharts.chart('container', {
+                credits: {
+                    enabled: false,
+                },
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '哈尔滨市各区平均二手房均价对比'
+                },
+                subtitle: {
+                    text: '数据来源: https://hrb.lianjia.com/ershoufang/'
+                },
+                xAxis: {
+                    title: {
+                        text: '地区'
+                    },
+                    categories: [
+                        '道里区', '松北区', '南岗区', '香坊区', '道外区',
+                        '呼兰区', '依兰县', '平房区', '双城区', '五常市',
+                        '巴彦县', '阿城区', '尚志市'
+                    ],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '价格（万元)'
+                    }
+                },
+                tooltip: {
+                    // head + 每个 point + footer 拼接成完整的 table
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} 万元/b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        point: {
+                            events: {
+                                click: function (e) {
+                                    //location.href = this.options.url;
+                                    //location.href = e.point.url
+                                    location.href = e.point.url
+                                }
+                            }
+                        }
+                    },
+                    column: {
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    data: [{
+                        y: 136.40,
+                        url: '#',
+                    }, {
+                        y: 120.08,
+                        url: '#',
+                    }, {
+                        y: 108.57,
+                        url: '#',
+                    }, {
+                        y: 96.94,
+                        url: '#',
+                    }, {
+                        y: 86.93,
+                        url: 'http://127.0.0.1:8000/list_region/?region=daowai',
+                    }, {
+                        y: 78.35,
+                        url: '#',
+                    }, {
+                        y: 65.00,
+                        url: '#',
+                    }, {
+                        y: 59.45,
+                        url: 'http://127.0.0.1:8000/list_region/?region=pingfang',
+                    }, {
+                        y: 55.60,
+                        url: '#',
+                    }, {
+                        y: 51.11,
+                        url: '#',
+                    }, {
+                        y: 37.75,
+                        url: '#',
+                    }, {
+                        y: 37.75,
+                        url: '#',
+                    }]
+                }]
+            });
+            var chart = Highcharts.chart('container1', {
+                credits: {
+                    enabled: false,
+                },
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '哈尔滨市各区二手房数量对比'
+                },
+                subtitle: {
+                    text: '数据来源: https://hrb.lianjia.com/ershoufang/'
+                },
+                xAxis: {
+                    title: {
+                        text: '地区'
+                    },
+                    categories: [
+                        '平房区', '道外区', '道里区', '南岗区', '香坊区',
+                        '松北区', '尚志市', '巴彦县', '呼兰区', '阿城区',
+                        '依兰县', '五常市', '双城区'
+                    ],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '数量 (个)'
+                    }
+                },
+                tooltip: {
+                    // head + 每个 point + footer 拼接成完整的 table
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    data: [2983, 2978, 2976, 2968, 2937, 2884, 232, 144, 7, 5, 5, 1, 1]
+                }]
+            });
+        </script>
+    </main>
+</div>
+
+
+</body>
+<!--用户登录状态显示，直接用原始index的-->
+<script type="text/javascript" src="js/index.js"></script>
+</html>

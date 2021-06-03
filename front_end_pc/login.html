@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>房天下-登录</title>
+
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script type="text/javascript" src="js/hosts.js"></script>
+    <script type="text/javascript" src="js/vue-2.5.16.js"></script>
+    <script type="text/javascript" src="js/axios-0.18.0.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            //定时器每秒调用一次fnDate()
+            setInterval(function () {
+                fnDate();
+            }, 1000);
+        }
+
+        //js 获取当前时间
+        function fnDate() {
+            var oDiv = document.getElementById("div1");
+            var date = new Date();
+            var year = date.getFullYear();//当前年份
+            var month = date.getMonth();//当前月份
+            var data = date.getDate();//天
+            var hours = date.getHours();//小时
+            var minute = date.getMinutes();//分
+            var second = date.getSeconds();//秒
+            var time = year + "-" + fnW((month + 1)) + "-" + fnW(data) + " " + fnW(hours) + ":" + fnW(minute) + ":" + fnW(second);
+            oDiv.innerHTML = time;
+        }
+
+        //补位 当某个字段不是两位数时补0
+        function fnW(str) {
+            var num;
+            str > 10 ? num = str : num = "0" + str;
+            return num;
+        }
+    </script>
+</head>
+<body>
+
+<div class="login_top clearfix">
+    <a href="index.html" class="logo fl" rel=“opener”>返回首页</a>
+    <a href="index.html" class="logo fl" id="div1" rel=“opener”></a>
+</div>
+<div class="login_form_bg" id='app'>
+    <div class="login_form_wrap clearfix">
+        <div class="login_banner fl"></div>
+        <div class="login_form fr">
+            <div class="login_title clearfix">
+                <a href="javascript:;" class="cur">账户登录</a>
+            </div>
+            <div class="form_con">
+                <div class="form_input cur">
+                    <form id="login-form" @submit.prevent="on_submit" rel=“opener”>
+                        <input type="text" v-model="username" @blur="check_username" name="" class="name_input"
+                               placeholder="请输入用户名或手机号">
+                        <div v-show="error_username" class="user_error" v-cloak>请填写用户名或手机号</div>
+                        <input type="password" v-model="password" @blur="check_pwd" name="pwd" class="pass_input"
+                               placeholder="请输入密码">
+                        <div v-show="error_pwd" class="pwd_error" v-cloak>{{ error_pwd_message }}</div>
+                        <div class="more_input clearfix">
+                            <input type="checkbox" v-model="remember">
+                            <label>记住登录</label>
+                            <a href="#">忘记密码</a><!--/find_password.html-->
+                        </div>
+                        <input type="submit" name="" value="登 录" class="input_submit">
+                    </form>
+                </div>
+            </div>
+            <div class="third_party">
+                <a href="/register.html" class="register_btn">立即注册</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="js/login.js"></script>
+<!--共享localStorage/sessionStorage-->
+<script type="text/javascript">
+    // http://127.0.0.1:62299/test.html
+    switch (location.hash) {
+        case "#data":
+            callback();
+            break;
+    }
+
+    function callback() {
+        const data = "啊啊啊啊"
+        try {
+            parent.location.hash = data;
+        } catch (e) {
+            // ie, chrome 下的安全机制无法修改 parent.location.hash
+            // 所以要利用一个中间的代理 iframe
+            var ifrproxy = document.createElement('iframe');
+            ifrproxy.style.display = 'none';
+            ifrproxy.src = 'http://127.0.0.1:62299/test.html#' + data;     // 该文件在请求域名的域下
+            document.body.appendChild(ifrproxy);
+        }
+    }
+</script>
+</body>
+
+</html>

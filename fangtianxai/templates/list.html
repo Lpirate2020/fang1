@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>房天下-房源列表</title>
+    <link rel="shortcut icon" href="#"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/main.css">
+    <script type="text/javascript" src="../static/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../static/js/axios-0.18.0.min.js"></script>
+    <!--    vue-->
+    <script type="text/javascript" src="../static/js/vue-2.5.16.js"></script>
+
+</head>
+<body>
+
+<div class="header_con">
+    <div class="header" id="app">
+        <div class="welcome fl">欢迎来到房天下! | <a href="http://127.0.0.1:8080/index.html">返回首页</a></div>
+        <div class="fr">
+            <div class="login_btn fl" v-if="show">
+                欢迎您：<em>{[username]}</em>
+                <span>|</span>
+                <a @click="logout">退出</a>
+            </div>
+
+            <div class="login_btn fl" v-if="showlogin">
+                <a href="http://127.0.0.1:8080/login.html">登录</a>
+                <span>|</span>
+                <a href="http://127.0.0.1:8080/register.html">注册</a>
+            </div>
+
+            <div class="user_link fl">
+                <span>|</span>
+                <a href="http://127.0.0.1:8080/user_center_info.html">用户中心</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="search_bar clearfix">
+        <span class="logo fl">当前时间:<br/>{{ now_time}}
+
+        </span>
+
+
+        <div class="search_wrap fl">
+            <div class="search_con">
+                <form id="searchForm" action="/list/" method="post">
+                    <input type="text" class="input_text fl" name="key" placeholder="搜索房源" value="{{key}}">
+                    <input type="button" class="input_btn fr" name="" value="搜索" onclick="searchbykey()">
+                </form>
+            </div>
+
+            <ul class="search_suggest fl">
+                <li><a href="#">香坊区</a></li>
+                <li><a href="#">道外区</a></li>
+                <li><a href="#">3室2厅</a></li>
+                <li><a href="#">1室1厅</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <li class="navbar_con">
+        <ul class="navlist fl">
+            <li>哈尔滨市 &gt;</li>
+            <li><a href="/list_region?region=pingfang">平房</a></li>
+            <li class="interval">|</li>
+            <li><a href="/list_region?region=daowai">道外</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">道里</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">南岗</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">香坊</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">松北</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">尚志市</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">巴彦县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">呼兰区</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">阿城区</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">延寿县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">依兰县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">木兰县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">宾县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">通河县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">五常市</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">双城区</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">方正县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">肇东市</a></li>
+        </ul>
+    </li>
+    <style type="text/css">
+        .house_box table {
+            border: 1px solid #F00;
+            width: 95%;
+            frame: above;
+            border-left: 0px;
+            border-right: 0px;
+            border-top: 20px solid red;
+            border-bottom: 0px;
+        }
+    </style>
+    <div class="house_box">
+    <span style="font-size:22px;color: red;text-align: center;display:block; ">
+        当前地区房源总数：{{count}}
+    </span>
+        {% for house_info in page.object_list%}
+        <table>
+            <!--    <table style="border-collapse: collapse;width: 95% ;" align="center" border="20" frame=above >-->
+            <tr>
+                <th rowspan="3">
+                    <a href="/detail?id={{house_info.house_id}}">
+                        <!-- {{house_info.house_id}} 用编码查询数据-->
+                        <img src="{{house_info.image_add}}0.jpg" width="285" height="216" id="image_add">
+                        <!--                        <img src="/static/images/fang1/0.jpg" width="285" height="216">-->
+                    </a>
+                </th>
+                <script type="text/javascript">
+
+                </script>
+                <!--            -->
+                <th colspan="3">
+
+                    <a href="/detail?id={{house_info.house_id}}" class="fl" style="font-size:22px;width:500px">{{ house_info.name }}
+                        </a>
+                    <!--                href="/{{house_info.BA_id}}" 房源详情页-->
+                </th>
+                <th rowspan="3" width="200px">
+                    <span style="font-size:30px;color: red;">{{ house_info.price }}</span>
+                    <span style="font-size:22px;color: red; ">万</span><br/>
+                    <span>单价</span><span>{{ house_info.price_m }}</span><span>元/平米</span>
+                </th>
+
+            </tr>
+            <tr>
+                <th>
+                    <span>房屋户型：</span><br/>
+                    <span>{{ house_info.choices }}</span>
+                </th>
+                <th>
+                    <span>面积：</span><br/>
+                    <span>{{ house_info.area }}</span>
+                </th>
+                <th>
+                    <span>房屋朝向：</span><br/>
+                    <span>{{ house_info.orientation }}</span>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <span>房屋楼层：</span><br/>
+                    <span>{{ house_info.floor }}</span>
+                </th>
+                <th>
+                    <span>户型结构：</span><br/>
+                    <span>{{ house_info.structure }}</span>
+                </th>
+                <th>
+                    <span>装修情况：</span><br/>
+                    <span>{{ house_info.decoration }}</span>
+                </th>
+                {% endfor %}
+            </tr>
+        </table>
+        <div class="pagenation">
+            {% if page.has_previous %} {% comment %}验证是否是第一页{% endcomment %}
+            <a href="javascript:" onclick="selectproductTypeByPage('1')">首页</a>
+            <a href="javascript:" onclick="selectproductTypeByPage('{{ page.previous_page_number }}')">上一页</a>
+            {% endif %}
+            {% for num in page.paginator.page_range %}
+            <a href="javascript:" onclick="selectproductTypeByPage('{{ num }}')" class="active">{{num}}</a>
+            {% endfor %}
+            {% if page.has_next %}
+            <a href="javascript:" onclick="selectproductTypeByPage('{{ page.next_page_number }}')">下一页></a>
+            <a href="javascript:" onclick="selectproductTypeByPage('{{ page.paginator.num_pages }}')">尾页></a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!--搜索-->
+    <!--关键字查询  主要需要“搜索房源”的key值-->
+    <script type="text/javascript">
+        function searchbykey() {
+            var form = $("#searchForm");
+            form.submit();
+        }
+    </script>
+    <!--分页-->
+    <script type="text/javascript">
+        function selectproductTypeByPage(page) {
+            window.location.href = "/list?hindex=" + page;
+        }
+    </script>
+    <!--地区显示-->
+    <script type="text/javascript">
+        function selectproductTypeByPage(page) {
+            window.location.href = "/list?hindex=" + page;
+        }
+    </script>
+    <script type="text/javascript" src="../static/js/list.js"></script>
+
+</div>
+</body>
+
+</html>

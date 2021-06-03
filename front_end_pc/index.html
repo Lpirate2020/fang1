@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>房天下-首页</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!--    jquery-->
+    <script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
+    <!--    缩写常用变量housts-->
+    <script type="text/javascript" src="js/hosts.js"></script>
+    <!--    格式-->
+    <script type="text/javascript" src="js/slide.js"></script>
+    <!--    vue-->
+    <script type="text/javascript" src="js/vue-2.5.16.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            //定时器每秒调用一次fnDate()
+            setInterval(function () {
+                fnDate();
+            }, 1000);
+        }
+
+        //js 获取当前时间
+        function fnDate() {
+            var oDiv = document.getElementById("div1");
+            var date = new Date();
+            var year = date.getFullYear();//当前年份
+            var month = date.getMonth();//当前月份
+            var data = date.getDate();//天
+            var hours = date.getHours();//小时
+            var minute = date.getMinutes();//分
+            var second = date.getSeconds();//秒
+            var time = year + "-" + fnW((month + 1)) + "-" + fnW(data) + " " + fnW(hours) + ":" + fnW(minute) + ":" + fnW(second);
+            oDiv.innerHTML = time;
+        }
+
+        //补位 当某个字段不是两位数时补0
+        function fnW(str) {
+            var num;
+            str > 10 ? num = str : num = "0" + str;
+            return num;
+        }
+    </script>
+    <script type="text/javascript" src="js/axios-0.18.0.min.js"></script>
+</head>
+
+<body>
+<div class="header_con" id="app">
+    <div class="header">
+        <div class="welcome fl">欢迎来到房天下!</div>
+        <div class="fr">
+            <div class="login_btn fl" v-if="show">
+                欢迎您：<em>{{ username }}</em>
+                <span>|</span>
+                <a @click="logout">退出</a>
+            </div>
+
+            <div class="login_btn fl" v-if="showlogin">
+                <a href="login.html">登录</a>
+                <span>|</span>
+                <a href="register.html">注册</a>
+            </div>
+
+            <div class="user_link fl">
+                <span>|</span>
+                <a href="user_center_info.html">用户中心</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="search_bar clearfix">
+    <a href="index.html" class="logo fl" id="div1"></a>
+
+    <div class="search_wrap fl">
+        <div class="search_con fr mt40">
+            <form id="searchForm" action="http://127.0.0.1:8000/list/" method="post">
+                    <input type="text" class="input_text fl" name="key" placeholder="搜索房源" value="">
+                    <input type="button" class="input_btn fr" name="" value="搜索" onclick="searchbykey()">
+            </form>
+        </div>
+        <ul class="search_suggest fl">
+            <li><a href="#">香坊区</a></li>
+            <li><a href="#">道外区</a></li>
+            <li><a href="#">3室2厅</a></li>
+            <li><a href="#">1室1厅</a></li>
+        </ul>
+    </div>
+    <div class="guest_cart fr">
+        <a href="http://127.0.0.1:8000/list" class="cart_name fl">房源信息查看</a>
+        <a href="data_analysis_index.html" class="cart_name fl">房源数据分析查看</a>
+    </div>
+
+</div>
+
+<div class="pos_center_con clearfix">
+    <ul class="slide">
+        <li><a href="#"><img src="images/slide01.jpg" alt="幻灯片01" style="width: 1600px;height:500px"></a></li>
+        <li><a href="#"><img src="images/slide02.jpg" alt="幻灯片02" style="width: 1600px;height:500px"></a></li>
+        <li><a href="#"><img src="images/slide03.jpg" alt="幻灯片03" style="width: 1600px;height:500px"></a></li>
+        <li><a href="#"><img src="images/slide04.jpg" alt="幻灯片04" style="width: 1600px;height:500px"></a></li>
+    </ul>
+    <div class="prev"></div>
+    <div class="next"></div>
+
+
+</div>
+
+</body>
+
+
+<!--    主页用户请求-->
+<script type="text/javascript" src="js/index.js"></script>
+<!--关键字查询  主要需要“搜索房源”的key值-->
+<script type="text/javascript">
+    function searchbykey() {
+        var form = $("#searchForm");
+        form.submit();
+    }
+</script>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>房天下-商品详情</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/main.css">
+    <script type="text/javascript" src="../static/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../static/js/axios-0.18.0.min.js"></script>
+    <!--    vue-->
+    <script type="text/javascript" src="../static/js/vue-2.5.16.js"></script>
+
+    <script>
+        $(function () {
+            var $tab_btn = $('.detail_tab li');
+            var $tab_con = $('.tab_content');
+            $tab_btn.click(function () {
+                $(this).addClass('active').siblings().removeClass('active');
+                $tab_con.eq($(this).index()).addClass('current').siblings().removeClass('current');
+            })
+        })
+    </script>
+</head>
+<body>
+<div class="header_con">
+    <div class="header">
+        <div class="header" id="app">
+            <div class="welcome fl">欢迎来到房天下! | <a href="http://127.0.0.1:8080/index.html">返回首页</a></div>
+            <div class="fr">
+                <div class="login_btn fl" v-if="show">
+                    欢迎您：<em>{[username]}</em>
+                    <span>|</span>
+                    <a @click="logout">退出</a>
+                </div>
+
+                <div class="login_btn fl" v-if="showlogin">
+                    <a href="http://127.0.0.1:8080/login.html">登录</a>
+                    <span>|</span>
+                    <a href="http://127.0.0.1:8080/register.html">注册</a>
+                </div>
+
+                <div class="user_link fl">
+                    <span>|</span>
+                    <a href="http://127.0.0.1:8080/user_center_info.html">用户中心</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="search_bar clearfix">
+
+    <span class="logo fl">当前时间:<br/>{{ now_time}}</span>
+
+
+    <div class="search_wrap fl">
+        <div class="search_con">
+            <form id="searchForm" action="/list/" method="post">
+                <input type="text" class="input_text fl" name="key" placeholder="搜索房源" value="{{key}}">
+                <input type="button" class="input_btn fr" name="" value="搜索" onclick="searchbykey()">
+            </form>
+        </div>
+
+        <ul class="search_suggest fl">
+            <li><a href="#">香坊区</a></li>
+            <li><a href="#">道外区</a></li>
+            <li><a href="#">3室2厅</a></li>
+            <li><a href="#">1室1厅</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="navbar_con">
+    <div class="navbar">
+        <ul class="navlist fl">
+            <li>哈尔滨市 &gt;</li>
+            <li><a href="/list_region?region=pingfang">平房</a></li>
+            <li class="interval">|</li>
+            <li><a href="/list_region?region=daowai">道外</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">道里</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">南岗</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">香坊</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">松北</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">尚志市</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">巴彦县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">呼兰区</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">阿城区</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">延寿县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">依兰县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">木兰县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">宾县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">通河县</a></li>
+            <li class="interval">|</li>
+            <li><a href="#">五常市</a></li>
+<!--            <li class="interval">|</li>-->
+<!--            <li><a href="#">双城区</a></li>-->
+<!--            <li class="interval">|</li>-->
+<!--            <li><a href="#">方正县</a></li>-->
+<!--            <li class="interval">|</li>-->
+<!--            <li><a href="#">肇东市</a></li>-->
+        </ul>
+    </div>
+</div>
+
+
+<div class="goods_detail_con clearfix">
+    <div class="goods_detail_pic fl"><img src="..{{house.image_add}}0.jpg"></div>
+    <div class="goods_detail_list fr">
+        <h3>{{house.name}}</h3>
+        <div class="prize_bar">
+            <span class="show_pirze">¥<em>{{house.price}}</em>万元</span>
+<!--            <a href="javascript:;" class="goods_judge">449人评价</a>-->
+        </div>
+        <div class="type_select">
+            <label>每平米价格：</label>
+            <a href="javascript:;" >{{ house.price_m }}元/平米</a>
+             <label>房屋朝向：</label>
+            <a href="javascript:;" >{{ house.orientation }}</a>
+        </div>
+        <div class="type_select">
+            <label>房屋户型：</label>
+            <a href="javascript:;" >{{ house.choices }}</a>
+            <label>房屋楼层：</label>
+            <a href="javascript:;" >{{ house.floor }}</a>
+        </div>
+        <div class="type_select">
+            <label>面积：</label>
+            <a href="javascript:;">{{ house.area }}</a>
+            <label>户型结构：</label>
+            <a href="javascript:;">{{ house.structure }}</a>
+        </div>
+        <div class="type_select">
+            <label>装修情况：</label>
+            <a href="javascript:;">{{ house.decoration }}</a>
+        </div>
+        <div class="total">联系人：<em>{{ house.agent_name }}</em></div>
+        <div class="operate_btn" id="userid">
+
+            <a href="#"  class="add_cart" id="add_cart" @click='send()'>联系中介</a>
+        </div>
+    </div>
+</div>
+
+<div class="main_wrap clearfix">
+    <div class="l_wrap fl clearfix">
+        <div class="new_goods">
+            <h3>热销房源</h3>
+            <ul>
+                <li>
+                    <a href="#"><img src="../static/images/slide04.jpg"></a>
+                    <h4><a href="#">平房商圈近地铁生活便利五楼通透价格可谈</a></h4>
+                    <div class="prize">13.0万元</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="r_wrap fr clearfix">
+        <ul class="detail_tab clearfix">
+            <li class="active">基本信息</li>
+            <li>交易属性</li>
+        </ul>
+        <div class="tab_content current">
+            <dl>
+                <dt>基本信息：</dt>
+                <div class="content"
+                     style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 522px; height: 172.8px; font-size: 14px; line-height: 22px; margin: 0px; padding: 0px; position: static; float: left; inset: auto; display: block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none disc; text-align: justify;">
+                    <ul style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 522px; height: 172.8px; font-size: 0px; line-height: 22px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                        <li style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label"
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">房屋户型</span>{{ house.choices }}
+                        </li>
+                        <li style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label"
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">所在楼层</span>{{ house.floor }}
+                        </li>
+                        <li style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label"
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">建筑面积</span>{{ house.area }}
+                        </li>
+                        <li style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label"
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">户型结构</span>{{ house.structure }}
+                        </li>
+                        <li style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label"
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">套内面积</span>{{ house.inside_area }}
+                        </li>
+                        <li style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label"
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">建筑类型</span>{{ house.building_type }}
+                        </li>
+                        <li style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label"
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">房屋朝向</span>{{ house.orientation }}
+                        </li>
+                        <li style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label"
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">建筑结构</span>{{ house.building_structure }}
+                        </li>
+                        <li style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label"
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">装修情况</span>{{ house.decoration }}
+                        </li>
+                        <li style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label"
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">梯户比例</span>{{ house.proportion }}
+                        </li>
+                        <li style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label"
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">配备电梯</span>{{ house.lift }}
+                        </li>
+                    </ul>
+                </div>
+                <dt>特别提示：本房源所示信息仅供参考，购房时请以该房屋档案登记信息、产权证信息以及所签订合同条款约定为准；本房源公示信息不做为合同条款，不具有合同约束力。</dt>
+            </dl>
+        </div>
+        <div class="tab_content">
+            <dl>
+                <dt>交易属性：</dt>
+                <div class="content"
+                     style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 522px; height: 115.2px; font-size: 14px; line-height: 22px; margin: 0px; padding: 0px; position: static; float: left; inset: auto; display: block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none disc; text-align: justify;">
+                    <ul style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 522px; height: 115.2px; font-size: 0px; line-height: 22px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                        <li class=""
+                            style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label "
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">挂牌时间</span>
+                            <span style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">{{ house.listing_time }}</span>
+                        </li>
+                        <li class=""
+                            style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label "
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">交易权属</span>
+                            <span style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">{{ house.transaction_type }}</span>
+                        </li>
+                        <li class=""
+                            style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label "
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">上次交易</span>
+                            <span style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">暂无数据</span>
+                        </li>
+                        <li class=""
+                            style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label "
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">房屋用途</span>
+                            <span style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">{{ house.purpose }}</span>
+                        </li>
+                        <li class=""
+                            style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label "
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">房屋年限</span>
+                            <span style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">{{ house.ascription_year }}</span>
+                        </li>
+                        <li class=""
+                            style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label "
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">产权所属</span>
+                            <span style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">{{ house.property_right }}</span>
+                        </li>
+                        <li style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 25.825px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label"
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">抵押信息</span>
+                            <span style="display: inline-block; width: 167.038px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; border: 0px none rgb(57, 64, 67); cursor: auto; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;"
+                                  title="无抵押">
+                                {{ house.mortgage }}
+                              </span>
+                        </li>
+                        <li class=""
+                            style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: 261px; height: 24px; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline-block; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">
+                            <span class="label "
+                                  style="color: rgb(153, 153, 153); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px 30px 0px 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(153, 153, 153); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(153, 153, 153); list-style: outside none none; text-align: justify;">房本备件</span>
+                            <span style="color: rgb(57, 64, 67); background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0); width: auto; height: auto; font-size: 14px; line-height: 24px; margin: 0px; padding: 0px; position: static; float: none; inset: auto; display: inline; border: 0px none rgb(57, 64, 67); cursor: auto; overflow: visible; box-sizing: content-box; border-radius: 0px; text-decoration: none solid rgb(57, 64, 67); list-style: outside none none; text-align: justify;">{{ house.premises_permit }}</span>
+                        </li>
+                    </ul>
+                </div>
+                <dt>特别提示：本房源所示信息仅供参考，购房时请以该房屋档案登记信息、产权证信息以及所签订合同条款约定为准；本房源公示信息不做为合同条款，不具有合同约束力。</dt>
+            </dl>
+        </div>
+
+    </div>
+</div>
+
+
+<script type="text/javascript" src="../static/js/detail.js"></script>
+<!--关键字查询  主要需要“搜索房源”的key值-->
+<script type="text/javascript">
+    function searchbykey() {
+        var form = $("#searchForm");
+        form.submit();
+    }
+</script>
+</body>
+</html>

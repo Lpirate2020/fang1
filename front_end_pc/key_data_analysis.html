@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>房天下-当前城市房源概况</title>
+    <!--    基础样式-->
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css"> <!-- https://fontawesome.com/ -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <!-- https://fonts.google.com/ -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/templatemo-xtra-blog.css" rel="stylesheet">
+    <!--    highcharts配件-->
+    <link rel="icon" href="https://jscdn.com.cn/highcharts/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.highcharts.com.cn/highcharts/highcharts.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <!--    用户状态js请求-->
+    <script type="text/javascript" src="js/hosts.js"></script>
+    <script type="text/javascript" src="js/vue-2.5.16.js"></script>
+    <script type="text/javascript" src="js/axios-0.18.0.min.js"></script>
+
+</head>
+<body>
+<div class="header_con">
+    <div class="header">
+        <div class="header" id="app">
+            <div class="fr">
+                <div class="login_btn fl" v-if="show">
+                    欢迎您：<em>{{ username }}</em>
+                    <span>|</span>
+                    <a @click="logout">退出</a>
+                </div>
+
+                <div class="login_btn fl" v-if="showlogin">
+                    <a href="http://127.0.0.1:8080/login.html">登录</a>
+                    <span>|</span>
+                    <a href="http://127.0.0.1:8080/register.html">注册</a>
+                </div>
+
+                <div class="user_link fl">
+                    <span>|</span>
+                    <a href="http://127.0.0.1:8080/user_center_info.html">用户中心</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<header class="tm-header" id="tm-header">
+    <div class="tm-header-wrapper">
+        <button class="navbar-toggler" type="button" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="tm-site-header">
+            <h1 class="text-center">
+                <a href="index.html">返回首页</a><br>
+                <a href="http://127.0.0.1:8000/list">查看房源</a>
+            </h1>
+        </div>
+        <nav class="tm-nav" id="tm-nav">
+            <ul>
+                <li class="tm-nav-item "><a href="data_analysis_index.html" class="tm-nav-link">
+                    <i class="fas fa-home"></i>
+                    数据分析首页
+                </a></li>
+                <li class="tm-nav-item active"><a href="http://127.0.0.1:8080/key_data_analysis.html" class="tm-nav-link">
+                    <i class="fas fa-users"></i>
+                    当前城市房源概况
+                </a></li>
+                <li class="tm-nav-item"><a href="http://127.0.0.1:8080/comparative_data_analysis.html" class="tm-nav-link">
+                    <i class="fas fa-users"></i>
+                    各区房源概况
+                </a></li>
+            </ul>
+        </nav>
+        <p class="tm-mb-80 pr-5 text-white">
+            介绍文字
+        </p>
+    </div>
+</header>
+<div class="container-fluid">
+    <main class="tm-main">
+        <div class="row tm-row">
+            当前城市：哈尔滨
+        </div>
+        <div id="container" style="min-width:400px;height:400px"></div>
+        <div id="container1" style="min-width:400px;height:400px"></div>
+        <div id="container2" style="min-width:400px;height:400px"></div>
+        <div id="container3" style="min-width:400px;height:400px"></div>
+        <div id="container4" style="min-width:400px;height:400px"></div>
+        <script>
+            var chart = Highcharts.chart('container', {
+                credits: {
+                    enabled: false,
+                },
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '哈尔滨市房源建筑类型统计'
+                },
+                subtitle: {
+                    text: '数据来源: https://hrb.lianjia.com/ershoufang/'
+                },
+                xAxis: {
+                    title: {
+                        text: '类型'
+                    },
+                    categories: [
+                        '平层', '复式', '错层', '跃层', '暂无数据',
+                    ],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '数量（个)'
+                    }
+                },
+                tooltip: {
+                    // head + 每个 point + footer 拼接成完整的 table
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} 个</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    data: [16864, 595, 138, 11, 513]
+                }]
+            });
+            var chart = Highcharts.chart('container1', {
+                credits: {
+                    enabled: false,
+                },
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '哈尔滨市房源户型结构统计'
+                },
+                subtitle: {
+                    text: '数据来源: https://hrb.lianjia.com/ershoufang/'
+                },
+                xAxis: {
+                    title: {
+                        text: '类型'
+                    },
+                    categories: [
+                        '板楼', '塔楼', '板塔结合', '平房', '暂无数据',
+                    ],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '数量（个)'
+                    }
+                },
+                tooltip: {
+                    // head + 每个 point + footer 拼接成完整的 table
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} 个</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    data: [14610, 393, 2056, 41, 1021]
+                }]
+            });
+            var chart = Highcharts.chart('container2', {
+                credits: {
+                    enabled: false,
+                },
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '哈尔滨市房源配备电梯情况统计'
+                },
+                subtitle: {
+                    text: '数据来源: https://hrb.lianjia.com/ershoufang/'
+                },
+                xAxis: {
+                    title: {
+                        text: '类型'
+                    },
+                    categories: [
+                        '无', '有', '暂无数据',
+                    ],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '数量'
+                    }
+                },
+                tooltip: {
+                    // head + 每个 point + footer 拼接成完整的 table
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} 个</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    data: [8513, 7771, 1837]
+                }]
+            });
+            var chart = Highcharts.chart('container3', {
+                credits: {
+                    enabled: false,
+                },
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '哈尔滨市房源楼层情况统计'
+                },
+                subtitle: {
+                    text: '数据来源: https://hrb.lianjia.com/ershoufang/'
+                },
+                xAxis: {
+                    title: {
+                        text: '楼层'
+                    },
+                    categories: [
+                        7, 8, 6, 2, 1, 0, 3, 9, 5, 4
+                    ],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '数量（个)'
+                    }
+                },
+                tooltip: {
+                    // head + 每个 point + footer 拼接成完整的 table
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} 个</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    data: [6422, 4075, 2433, 1204, 937, 656, 654, 626, 599, 515]
+                }]
+            });
+            var chart = Highcharts.chart('container4', {
+                credits: {
+                    enabled: false,
+                },
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '哈尔滨市房源梯户比例统计'
+                },
+                subtitle: {
+                    text: '数据来源: https://hrb.lianjia.com/ershoufang/'
+                },
+                xAxis: {
+                    categories: [
+                        '一梯三户',
+                        '一梯两户',
+                        '一梯四户',
+                        '两梯两户',
+                        '两梯三户',
+                        '两梯四户',
+                        '一梯五户',
+                        '一梯一户',
+                        '两梯六户',
+                        '两梯五户',
+                        '一梯六户',
+                        '两梯七户',
+                        '两梯八户',
+                        '一梯七户',
+                        '三梯四户',
+                        '三梯三户',
+                        '七梯三户',
+                        '十梯两户',
+                        '三梯两户',
+                        '两梯十户',
+                        '七梯两户',
+                        '两梯九户',
+                        '两梯一户',
+                        '三梯九户',
+                        '一梯八户',
+                        '一梯十户',
+                        '四梯三户',
+                        '两梯十二户',
+                        '三梯十二户',
+                        '两梯十九户',
+                        '十二梯三户',
+                        '十八梯两户',
+                        '六梯三户',
+                        '八梯三户',
+                        '两梯十三户',
+                        '两梯十一户',
+                        '四梯十二户',
+                        '两梯十六户',
+                        '三梯十四户',
+                        '六梯两户',
+                        '十梯三户',
+                        '一梯二十九户',
+                        '三梯十户',
+                        '两梯二十户',
+                        '二十梯两户',
+                        '四梯二十户',
+                        '四梯十五户',
+                        '三梯八户',
+                        '二十梯三户',
+                        '四梯十四户',
+                        '十二梯四户',
+                        '四梯四户',
+                        '四梯两户',
+                        '四梯二十八户',
+                        '四梯十六户',
+                        '十二梯两户',
+                        '十六梯三户',
+                        ,
+                    ],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '数量（个)'
+                    }
+                },
+                tooltip: {
+                    // head + 每个 point + footer 拼接成完整的 table
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} 个</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    data: [5789, 4202, 1721, 1347, 1270, 1031, 367, 306, 167, 161, 143, 107, 106,
+                        75, 51, 50, 44, 41, 40, 39, 37, 31, 30, 29, 28, 24, 24, 24, 24, 23, 22, 22,
+                        21, 21, 19, 18, 18, 16, 16, 16, 16, 15, 15, 15, 15, 15, 14, 14, 14, 13, 12,
+                        12, 12, 11, 11, 11, 11]
+                }]
+            });</script>
+    </main>
+</div>
+</body>
+<!--用户登录状态显示，直接用原始index的-->
+<script type="text/javascript" src="js/index.js"></script>
+</html>
